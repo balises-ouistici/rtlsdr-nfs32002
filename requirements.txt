@@ -1,0 +1,2 @@
+pyrtlsdr
+numpy
