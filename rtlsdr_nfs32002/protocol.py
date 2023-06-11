@@ -65,7 +65,9 @@ class RtlSdr_NFS32002:
 
                 if detected:
                     callback()
-                    await stream.queue.get()
+                    while not stream.queue.empty():
+                        stream.queue.get_nowait()
+                        stream.queue.task_done()
 
 
     def startDetection(self, callback, error_rate = 0.2):
