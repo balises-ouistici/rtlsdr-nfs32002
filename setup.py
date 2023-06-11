@@ -14,7 +14,7 @@ with open('requirements.txt') as f:
 # This call to setup() does all the work
 setup(
     name="rtlsdr_nfs32002",
-    version="0.1",
+    version="0.2",
     description="Réimplémentation du protocole NF S 32002 utilisé par les balises sonores des feux piétons. Permet de détecter le signal d'une télécommande à partir d'un RTL SDR.",
     long_description=README,
     long_description_content_type="text/markdown",
