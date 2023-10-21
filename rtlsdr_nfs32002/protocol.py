@@ -47,17 +47,37 @@ class RtlSdr_NFS32002:
             i += 1
 
         return(detected_frame)
+    
+    def __detectNFS32002FrameSimple(self, samples_array, error_rate):
+        sequence = "001101010011010101010100101101001010101010101010"
+        
+        data = np.abs(samples_array)**2
+        mean_data = np.mean(data)
+        normalized = np.where(data > mean_data, 1, 0)
+        # bin_data = normalized[np.where(normalized != 0)[0][0]:]
+        # bin_data = np.append([0], bin_data)
+        bin_data = normalized
+        bin_data = bin_data[0::250]
+        binlist = "".join(list(map(str, bin_data.tolist())))
+        
+        return (sequence in binlist)
 
-    async def __detectionLoop(self, callback, error_rate):
+    async def __detectionLoop(self, callback, error_rate, simple_detect):
         samples_array = np.array([])
         stream = self.sdr.stream()
+        
+        if simple_detect:
+            detect = self.__detectNFS32002FrameSimple
+        else:
+            detect = self.__detectNFS32002Frame
+            
         async for samples in stream:
             samples_array = np.append(samples_array, samples)
        
             if len(samples_array) > 250*200:
                 
                 try:
-                    detected = self.__detectNFS32002Frame(samples_array, error_rate)
+                    detected = detect(samples_array, error_rate)
                 except:
                     detected = False
                 # Flush samples array
@@ -70,6 +90,6 @@ class RtlSdr_NFS32002:
                         stream.queue.task_done()
 
 
-    def startDetection(self, callback, error_rate = 0.2):
+    def startDetection(self, callback, error_rate = 0.2, simple_detect = False):
         loop = asyncio.get_event_loop()
-        loop.run_until_complete(self.__detectionLoop(callback, error_rate))
+        loop.run_until_complete(self.__detectionLoop(callback, error_rate, simple_detect))

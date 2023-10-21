@@ -45,3 +45,8 @@ Instancier la classe RtlSdr_NFS3200 puis appeler la méthode startDetection en l
 sdr = RtlSdr_NFS32002()
 sdr.startDetection(callback=detect)
 ```
+ou :
+```python
+sdr = RtlSdr_NFS32002()
+sdr.startDetection(callback=detect, simple_detect=True)
+```
