@@ -14,13 +14,13 @@ with open('requirements.txt') as f:
 # This call to setup() does all the work
 setup(
     name="rtlsdr_nfs32002",
-    version="0.2",
+    version="0.3",
     description="Réimplémentation du protocole NF S 32002 utilisé par les balises sonores des feux piétons. Permet de détecter le signal d'une télécommande à partir d'un RTL SDR.",
     long_description=README,
     long_description_content_type="text/markdown",
     url="https://github.com/balises-ouistici/rtlsdr_nfs32002",
-    author="Jérémy Kalsron",
-    author_email="jeremy.kalsron@gmail.com  ",
+    author="Jérémy Kalsron ; Samuel Braikeh <samuel.braikeh@yahoo.fr>",
+    author_email="jeremy.kalsron@gmail.com",
     license="AGPL-3.0",
     classifiers=[
         "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
