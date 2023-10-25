@@ -19,10 +19,10 @@ class RtlSdr_NFS32002:
         data = np.abs(samples_array)**2
         mean_data = np.mean(data)
         normalized = np.where(data > mean_data, 1, 0)
-        bin = normalized[np.where(normalized != 0)[0][0]:]
-        bin = np.append([0], bin)
+        bin_data = normalized[np.where(normalized != 0)[0][0]:]
+        bin_data = np.append([0], bin_data)
 
-        values, timings = find_runs(bin)
+        values, timings = find_runs(bin_data)
         error_rate_min, error_rate_max = 1-error_rate, 1+error_rate
 
         detected_frame = False
