@@ -13,6 +13,14 @@ class RtlSdr_NFS32002:
         self.sdr = RtlSdr()
         self.sdr.sample_rate = 1e6
         self.sdr.center_freq = 868.3e6
+        self.sdr.set_manual_gain_enabled(False)
+    
+    def setManualGain(self, gain):
+        self.sdr.set_manual_gain_enabled(True)
+        self.sdr.gain(gain)
+
+    def setAutomaticGain(self):
+        self.sdr.set_manual_gain_enabled(False)
 
     def __detectNFS32002Frame(self, samples_array, error_rate):
         nfs32002_timings = [625, 312.5, 312.5, 207.5, 207.5, 500, 500, 250, 250, 250, 250, 500, 500, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 500, 250, 250, 500, 250, 250, 500, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250]
