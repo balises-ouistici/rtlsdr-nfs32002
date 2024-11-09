@@ -2,6 +2,7 @@
 
 from rtlsdr import RtlSdr
 import numpy as np
+import scipy as sp
 import asyncio
 
 from .utils import *
@@ -20,9 +21,12 @@ class RtlSdr_NFS32002:
         threshold = np.mean(data)/4
         normalized = np.where(data > threshold, 1, 0)
         bin_data = normalized[np.where(normalized != 0)[0][0]:]
-        bin_data = np.append([0], bin_data)
+        
+        filtered_data = sp.signal.savgol_filter(bin_data, 50, 1)
+        filtered_data = np.where(filtered_data > 0.5, 1, 0)
+        filtered_data = np.append([0], filtered_data)
 
-        values, timings = find_runs(bin_data)
+        values, timings = find_runs(filtered_data)
         error_rate_min, error_rate_max = 1-error_rate, 1+error_rate
 
         detected_frame = False
