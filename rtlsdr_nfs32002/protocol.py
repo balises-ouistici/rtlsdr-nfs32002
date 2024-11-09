@@ -17,8 +17,8 @@ class RtlSdr_NFS32002:
         nfs32002_timings = [625, 312.5, 312.5, 207.5, 207.5, 500, 500, 250, 250, 250, 250, 500, 500, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 500, 250, 250, 500, 250, 250, 500, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250]
         
         data = np.abs(samples_array)**2
-        mean_data = np.mean(data)
-        normalized = np.where(data > mean_data, 1, 0)
+        threshold = np.mean(data)/4
+        normalized = np.where(data > threshold, 1, 0)
         bin_data = normalized[np.where(normalized != 0)[0][0]:]
         bin_data = np.append([0], bin_data)
 
