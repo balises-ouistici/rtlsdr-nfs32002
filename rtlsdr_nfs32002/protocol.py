@@ -5,7 +5,7 @@ import numpy as np
 import scipy as sp
 import asyncio
 
-from .utils import *
+from .utils import find_runs
 
 class RtlSdr_NFS32002:
 
