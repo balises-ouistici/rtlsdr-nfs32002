@@ -1,6 +1,6 @@
 # License : AGPLv3
 
-from rtlsdr_nfs32002.protocol import *
+from rtlsdr_nfs32002.protocol import RtlSdr_NFS32002
 
 def detect():
     print("Ouistici !")
