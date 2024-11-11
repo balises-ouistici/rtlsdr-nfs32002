@@ -14,6 +14,8 @@ class RtlSdr_NFS32002:
         self.sdr.sample_rate = 1e6
         self.sdr.center_freq = 868.3e6
         self.sdr.set_manual_gain_enabled(False)
+        self.filter_method = "uniform"
+        self._filter = self._filter_uniform
     
     def setManualGain(self, gain):
         self.sdr.set_manual_gain_enabled(True)
@@ -22,18 +24,33 @@ class RtlSdr_NFS32002:
     def setAutomaticGain(self):
         self.sdr.set_manual_gain_enabled(False)
 
+    def setFilterMethod(self, filter_method):
+        if filter_method in ["savgol","uniform"]:
+            self.filter_method = filter_method
+            self._filter = getattr(self, f"_filter_{filter_method}")
+        else:
+            raise ValueError(f"Invalid filter name: {filter_method}")
+
+    def _filter_savgol(self, data):
+        threshold = np.mean(data)/4
+        normalized = np.where(data > threshold, 1, 0)
+        bin_data = normalized[np.where(normalized != 0)[0][0]:]
+        filtered_data = sp.signal.savgol_filter(bin_data, 50, 1)
+        filtered_data = np.where(filtered_data > 0.5, 1, 0)
+        filtered_data = np.append([0], filtered_data)
+        return filtered_data
+
+    def _filter_uniform(self, data):
+        filtered_data = sp.ndimage.uniform_filter1d(data, size=50)
+        filtered_data = np.where(filtered_data > np.amax(filtered_data)/4, 1, 0)
+        filtered_data = np.append([0], filtered_data)
+        return filtered_data
+    
     def __detectNFS32002Frame(self, samples_array, error_rate):
         nfs32002_timings = [625, 312.5, 312.5, 207.5, 207.5, 500, 500, 250, 250, 250, 250, 500, 500, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 500, 250, 250, 500, 250, 250, 500, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250]
         
         data = np.abs(samples_array)**2
-        threshold = np.mean(data)/4
-        normalized = np.where(data > threshold, 1, 0)
-        bin_data = normalized[np.where(normalized != 0)[0][0]:]
-        
-        filtered_data = sp.signal.savgol_filter(bin_data, 50, 1)
-        filtered_data = np.where(filtered_data > 0.5, 1, 0)
-        filtered_data = np.append([0], filtered_data)
-
+        filtered_data = self.__filter(data)
         values, timings = find_runs(filtered_data)
         error_rate_min, error_rate_max = 1-error_rate, 1+error_rate
 
