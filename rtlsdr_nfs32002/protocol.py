@@ -65,11 +65,11 @@ class RtlSdr_NFS32002:
         
         data = np.abs(samples_array)**2
         mean_data = np.mean(data)
-        normalized = np.where(data > mean_data, 1, 0)
-        # bin_data = normalized[np.where(normalized != 0)[0][0]:]
-        # bin_data = np.append([0], bin_data)
-        bin_data = normalized
-        bin_data = bin_data[0::250]
+        normalized = np.where(data > mean_data/4, 1, 0)
+        normalized = normalized[np.where(normalized != 0)[0][0]:] # remove first zeros
+        normalized = np.append([0], normalized)
+        
+        bin_data = normalized[0::250]
         binlist = "".join(list(map(str, bin_data.tolist())))
         
         return (sequence in binlist)
