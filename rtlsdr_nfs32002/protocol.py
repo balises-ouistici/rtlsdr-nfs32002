@@ -64,8 +64,8 @@ class RtlSdr_NFS32002:
         sequence = "001101010011010101010100101101001010101010101010"
         
         data = np.abs(samples_array)**2
-        mean_data = np.mean(data)
-        normalized = np.where(data > mean_data/4, 1, 0)
+        threshold = np.mean(data)/4
+        normalized = np.where(data > threshold, 1, 0)
         normalized = normalized[np.where(normalized != 0)[0][0]:] # remove first zeros
         normalized = np.append([0], normalized)
         
